@@ -51,4 +51,26 @@ public class ProdutoController {
         PagedModel<EntityModel<ProdutoVo>> pagedModel = assembler.toModel(produtos);
         return new ResponseEntity<>(pagedModel, HttpStatus.OK);
     }
+
+    @PostMapping(produces = {"application/json", "application/xml", "application/x-yaml"},
+                 consumes = {"application/json", "application/xml", "application/x-yaml"})
+    public ProdutoVo create(@RequestBody ProdutoVo produtoVo) {
+        ProdutoVo proVO = produtoService.create(produtoVo);
+        proVO.add(linkTo(methodOn(ProdutoController.class).findById(produtoVo.getId())).withSelfRel());
+        return proVO;
+    }
+
+    @PutMapping(produces = {"application/json", "application/xml", "application/x-yaml"},
+            consumes = {"application/json", "application/xml", "application/x-yaml"})
+    public ProdutoVo update(@RequestBody ProdutoVo produtoVo) {
+        ProdutoVo proVO = produtoService.update(produtoVo);
+        proVO.add(linkTo(methodOn(ProdutoController.class).findById(produtoVo.getId())).withSelfRel());
+        return proVO;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Long id){
+       produtoService.delete(id);
+        return ResponseEntity.ok().build();
+    }
 }
